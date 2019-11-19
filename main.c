@@ -53,7 +53,20 @@ int getIntegerInput(void) {
 
 //calculate the actual card number in the blackjack game
 int getCardNum(int cardnum) { 		//card num=modeling number
+	int actual_num = cardnum % 13	;
 	
+	if (actual_num>10)			//J, Q, K change to numer
+		actual_num = 10	;
+	
+	else if  (actual_num==1);	// making ACE have actual number 11
+		{
+		actual_num=11;
+		}
+
+	if (actual_num==11 && cardSum[N_MAX_USER]>21)	// making ACE have actual number 1 if it needs	//[Error] 'else' without a previous 'if'
+		actual_num=1;
+		
+	return actual_num	;
 }
 
 //print the card information (e.g. DiaA)
@@ -69,31 +82,31 @@ void printCard(int cardnum) {
 	printf("SPD");
 	
 	if (cardnum%13==1)
-	printf("ACE");
+	printf("ACE	");
 	else if (cardnum%13==2)
-	printf("2");
+	printf("2	");
 	else if (cardnum%13==3)
-	printf("3");
+	printf("3	");
 	else if (cardnum%13==4)
-	printf("4");
+	printf("4	");
 	else if (cardnum%13==5)
-	printf("5");
+	printf("5	");
 	else if (cardnum%13==6)
-	printf("6");
+	printf("6	");
 	else if (cardnum%13==7)
-	printf("7");
+	printf("7	");
 	else if (cardnum%13==8)
-	printf("8");
+	printf("8	");
 	else if (cardnum%13==9)
-	printf("9");
+	printf("9	");
 	else if (cardnum%13==10)
-	printf("10");
+	printf("10	");
 	else if (cardnum%13==11)
-	printf("JACK");
+	printf("JACK	");
 	else if (cardnum%13==12)
-	printf("QUEEN");
+	printf("QUEEN	");
 	else if (cardnum%13==0)
-	printf("KING");		
+	printf("KING	");		
 }
 
 
@@ -117,9 +130,17 @@ int mixCardTray(void) {
 	printf(" --> card is mixed and put into the tray\n");
 }
 
+int top = N_CARD-1	;
+
 //get one card from the tray
 int pullCard(void) {
-
+	if (top <= 0)
+	{
+		gameEnd = 1;
+		return -1;
+	}
+	
+	return CardTray[top--];
 }
 
 
@@ -155,7 +176,7 @@ int betDollar(void) {
 	srand((unsigned) time(NULL));
 	
 	for (i=1; i<n_user; i++)						// other user's betting money
-		printf(" -> player%d bets %d (out of $%d)\n", i, 1+rand()%51, dollar[i]);  
+		printf(" -> player%d bets %d (out of $%d)\n", i, 1+rand()%N_MAX_BET, dollar[i]);  
 }
 
 
@@ -180,11 +201,23 @@ void printCardInitialStatus(void) {
 	int i	;
 	
 	printf("---------- CARD OFFERING ----------\n");
-	printf("	server	: X		%c\n", cardhold[n_user][0] );
-	printf("	you	: %c %c	\n", cardhold[0][0], cardhold[0][1]);
-	if (n_user>1)
+	printf("	server	: X		");				//server's card
+	printCard(cardhold[n_user][0]);
+	printf("\n");
+	
+	
+	printf("	you	: ");						//your card
+	printCard(cardhold[0][0]);
+	printCard(cardhold[0][1]);
+	printf("\n");
+	
+	
+	if (n_user>1)								//user's card
 		for(i=1; i<n_user; i++)
-		printf("	player%d 	: %c %c	\n", i, cardhold[i][0], cardhold[i][1]);
+		printf("	player%d : ", i);
+		printCard(cardhold[i][0]);
+		printCard(cardhold[i][1]);
+		printf("\n");
 }
 
 int getAction(void) {
