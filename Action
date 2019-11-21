@@ -1,0 +1,110 @@
+//Action
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+#define N_CARDSET        	1
+#define N_CARD           	52
+#define N_DOLLAR         	50
+
+
+#define N_MAX_CARDNUM     	13
+#define N_MAX_USER         	5
+#define N_MAX_CARDHOLD      10
+#define N_MAX_GO        	17
+#define N_MAX_BET        	5
+
+#define N_MIN_ENDCARD     	30
+
+//card tray object
+int CardTray[N_CARDSET*N_CARD];
+int cardIndex = 0;
+
+
+//player info
+int dollar[N_MAX_USER];                  //dollars that each player has
+int n_user;                           //number of users
+
+
+//play yard information
+int cardhold[N_MAX_USER + 1][N_MAX_CARDHOLD];   //cards that currently the players hold
+int cardSum[N_MAX_USER];               //sum of the cards
+int bet[N_MAX_USER];                  //current betting 
+int gameEnd = 0;                      //game end flag
+
+int input;
+int turnEnd = 0;
+int NumofCard = 2;
+
+
+
+
+
+int getAction(void) {
+
+
+   printf("Action? (0 - go, others - stay) :");
+
+   input = getIntegerInput();
+
+   //GO
+   if (input == 0)
+   {
+      cardhold[0][NumofCard] = pullCard();
+      NumofCard++;
+   }
+   //Stay
+   else
+   {
+      turnEnd = 1;
+      printf("\n\n");
+   }
+   
+
+}
+
+
+int getActionplayer(int user)
+{
+
+
+   if (cardSum[user] >= 17)
+   {
+   	printf("STAY!");
+	turnEnd = 1;
+	}
+ 
+
+   else
+   {
+      printf("GO!");
+      cardhold[user][NumofCard] = pullCard();
+      NumofCard++;
+      printf("\n");
+   }
+}
+
+
+int getActionServer()
+{
+
+   if (cardSum[n_user] >= 17)
+   {
+
+      turnEnd = 1;
+
+      printf("STAY!\n");
+      printf("[[[[[[[server result is.... %d ]]]]]]]]]]\n\n", cardSum[n_user]);
+
+   }
+   
+   
+   else
+   {
+      printf("GO!\n");
+      cardhold[n_user][NumofCard] = pullCard();
+      NumofCard++;
+   }
+}
